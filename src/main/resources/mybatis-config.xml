@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--    <properties resource="db.properties"/>-->
+    <typeAliases>
+        <!--        少的时候用-->
+        <!--        <typeAlias type="com.laozhou.pojo.Mybatis" alias="Mybatis"/>-->
+        <!--        多的时候用 扫描包 默认名-->
+        <package name="com.laozhou.pojo"/>
+    </typeAliases>
+    <!--    <environments default="development">-->
+    <!--        <environment id="development">-->
+    <!--            <transactionManager type="JDBC"/>-->
+    <!--            <dataSource type="POOLED">-->
+    <!--                <property name="driver" value="${driver}"/>-->
+    <!--                <property name="url" value="${url}"/>-->
+    <!--                <property name="username" value="${username}"/>-->
+    <!--                <property name="password" value="${password}"/>-->
+    <!--            </dataSource>-->
+    <!--        </environment>-->
+    <!--    </environments>-->
+    <mappers>
+        <mapper class="com.laozhou.dao.UserMapper"/>
+        <mapper class="com.laozhou.dao.ProblemMapper"/>
+        <mapper class="com.laozhou.dao.AnswerMapper"/>
+    </mappers>
+</configuration>

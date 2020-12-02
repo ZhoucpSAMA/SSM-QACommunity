@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.laozhou.dao.ProblemMapper">
+    <select id="getAllTitle" resultType="Problem">
+        select problem_title
+        from problem;
+    </select>
+    <select id="getAllProblems" resultType="Problem">
+        select *
+        from problem;
+    </select>
+    <insert id="addProblem" parameterType="Problem">
+        insert into problem (problem_title, problem_content, problem_date, problem_user_id)
+        values (#{problem_title}, #{problem_content}, #{problem_date}, #{problem_user_id});
+    </insert>
+    <delete id="delProblemById" parameterType="int">
+        delete
+        from problem
+        where problem_id = #{problem_id}
+    </delete>
+    <update id="updateProblem" parameterType="Problem">
+        update problem
+        set problem_id      = #{problem_id},
+            problem_title   = #{problem_title},
+            problem_content = #{problem_content},
+            problem_date    = #{problem_date},
+            problem_user_id = #{problem_user_id}
+        where problem_id = #{problem_id};
+    </update>
+    <select id="getProblemNums" resultType="int">
+        select count(problem_id) as nums
+        from problem
+    </select>
+    <select id="getProblemById" resultType="Problem">
+        select * from problem where problem_id = #{problem_id}
+    </select>
+    <select id="getCurProblemUser" resultType="String">
+        SELECT username
+        FROM `user`,problem
+        WHERE problem_user_id = `user`.id
+          AND problem_id = #{problem_id}
+    </select>
+
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.laozhou.dao.UserMapper">
+    <select id="getUserByName" resultType="User">
+        select *
+        from user
+        where username = #{username};
+    </select>
+    <select id="getAllUsers" resultType="User">
+        select *
+        from user;
+    </select>
+    <insert id="addUser" parameterType="User">
+        insert into user (username, password, role, status,email)
+        values (#{username}, #{password}, #{role}, #{status},#{email});
+    </insert>
+    <delete id="delUserByName" parameterType="String">
+        delete
+        from user
+        where username = #{username};
+    </delete>
+    <update id="updateUser" parameterType="User">
+        update user
+        set id       = #{id},
+            username = #{username},
+            password = #{password},
+            role     = #{role},
+            status   = #{status},
+            email = #{email}
+        where id = #{id};
+    </update>
+    <select id="getUserTotal" resultType="int">
+        select count(*)
+        from user
+    </select>
+    <select id="getIDByUsername" resultType="int">
+        select id from user where username = #{username}
+    </select>
+    <select id="getRoleById" resultType="int">
+        select role from user where id = #{id}
+    </select>
+</mapper>

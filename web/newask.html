@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/element-ui.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="lib/wangEditor/wangEditor.min.js"></script>
+    <script src="lib/jquery.md5.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="lib/element-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="css/newask.css"/>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+
+    <title>发布方案</title>
+</head>
+<body>
+<div id="app">
+    <header>
+        <div class="header">
+            <div><a href="/"><img class="img-logo" src="lib/logo1.png" alt=""></a></div>
+            <div class="plane-login">
+                <div v-show="islogin==0">
+                    <a href="#" @click="showLoginWindow=true">登录</a> | <a href="register.html">注册</a>
+                </div>
+                <div v-show="islogin==1">
+                    <el-menu :default-active="menuActiveIndex" class="el-menu-demo" mode="horizontal">
+                        <el-submenu index="2">
+                            <template slot="title"><img
+                                    src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" alt=""
+                                    class="nav-avatar" style="font-weight: bold">{{loginInfo.username}}
+                            </template>
+                            <el-menu-item index="2-1">个人中心</el-menu-item>
+                            <el-menu-item index="2-2">设置</el-menu-item>
+                            <el-menu-item index="2-3" @click="exit">退出登录</el-menu-item>
+                        </el-submenu>
+                    </el-menu>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="content">
+            <h2>发布方案</h2>
+            <div class="plane-askForm">
+                <el-input v-model="askform.title" class="input-title" maxlength="30" placeholder="方案名称"
+                          show-word-limit></el-input>
+
+                <div id="mainEdit"></div>
+
+                <div class="plane-btn">
+<!--                    <el-link type="info">保存草稿</el-link>-->
+                    <el-button type="primary" @click="sendPost">发布方案</el-button>
+                </div>
+            </div>
+
+        </div>
+        <transition name="el-zoom-in-center">
+            <div class="window-plane-login" v-show="showLoginWindow">
+                <div class="box-mask"></div>
+                <div class="box-login">
+                    <div class="plane-login-title">
+                        <div><b>登录账户</b></div>
+                        <div @click="closeLoginPlane"><i class="el-icon-close close"></i></div>
+                    </div>
+                    <div class="box-login-form">
+                        <div class="form-item">
+                            <el-input v-model="form.username" name="username" placeholder="账号"></el-input>
+                        </div>
+                        <div class="form-item">
+                            <el-input v-model="form.password" name="password" placeholder="密码" show-password></el-input>
+                        </div>
+                        <div class="form-item form-set-right">
+                            <a href="#">忘记密码</a> | <a href="#">无法登录</a>
+                        </div>
+                        <div class="form-item form-set-right">
+                            <el-button type="primary" @click="login">登录</el-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+    </main>
+    <script>
+        (function ($) {
+            $.getUrlParam = function (name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]);
+                return null;
+            }
+        })(jQuery);
+
+
+        var vue = new Vue({
+            el: '#app',
+            mounted() {
+                this.init()
+            },
+            data: {
+                userOb: {},
+                askform: {
+                    title: '',
+                    content: '',
+                    user_id:''
+                },
+                form: {
+                    username: '',
+                    password: ''
+                },
+                menuActiveIndex: 1,
+                islogin: 0,
+                loginInfo:{},
+                showLoginWindow: false
+            },
+            methods: {
+                init() {
+                    var that = this;
+                    $.get('/user/loginInfo', function (data) {
+                        if (data != 0) {
+                            that.loginInfo = JSON.parse(data);
+                            that.islogin = 1;
+                        }
+                    });
+                },
+                sendPost() {
+                    let that = this;
+                    $.post('/problem/add', {user_id:that.loginInfo.id,title: that.askform.title, content: htmlEncode(editor.txt.html())}, function (data) {
+
+                        let obj = JSON.parse(data);
+                        if(obj.code==='1'){
+                            that.$message({type: 'success', message: obj.msg});
+                        }else {
+                            that.$message({type: 'error', message: obj.msg});
+                        }
+                        setTimeout(function () {
+                            window.location.href = "/";
+                        }, 2000);
+                    });
+                },
+                login() {
+                    let that = this;
+                    $.post('/login', {username: that.form.username, password: that.form.password}, function (data) {
+                        that.userOb = data;
+                        let msg = null;
+                        if (that.userOb.code === '1') {
+                            if(that.userOb.role===1){
+                                msg = '管理员:'+that.userOb.username+'  '+that.userOb.msg;
+                            }else {
+                                msg = that.userOb.msg;
+                            }
+                            that.$message({type: 'success', message: msg});
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            that.$message({type: 'error', message: that.userOb.msg});
+                        }
+
+                    }, "json");
+                },
+                exit() {
+                    let that = this;
+                    $.get('/user/logout', function (data) {
+                        if (data === '1') {
+                            that.$message({message: '已退出'});
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            that.$message({type: 'error', message: '退出失败'});
+                        }
+                    })
+                },
+                closeLoginPlane() {
+                    this.showLoginWindow = false;
+                }
+            }
+        });
+        var E = window.wangEditor;
+        var editor = new E('#mainEdit');
+        editor.customConfig.uploadImgShowBase64 = true;
+        editor.customConfig.zIndex = 100;
+        editor.create();
+
+        function htmlEncode(value) {
+            return $('<div/>').text(value).html();
+        }
+
+        //Html解码获取Html实体
+        function htmlDecode(value) {
+            return $('<div/>').html(value).text();
+        }
+    </script>
+</div>
+</body>
+</html>
