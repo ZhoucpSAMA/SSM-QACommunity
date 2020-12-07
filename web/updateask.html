@@ -8,10 +8,13 @@
 	<script src="lib/vue.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="lib/element-ui.js" type="text/javascript" charset="utf-8"></script>
 	<script src="lib/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="lib/wangEditor/wangEditor.min.js"></script>
 	<script src="lib/jquery.md5.js" type="text/javascript" charset="utf-8"></script>
 	<link rel="stylesheet" type="text/css" href="lib/element-ui.css"/>
+	<link rel="stylesheet" type="text/css" href="css/newask.css"/>
 	<link rel="stylesheet" type="text/css" href="css/index.css"/>
-	<title>方案解决系统</title>
+
+	<title>修改问题</title>
 </head>
 <body>
 <div id="app">
@@ -39,57 +42,24 @@
 		</div>
 	</header>
 	<main>
-		<div class="plane-view-box">
-			<div class="view-box view-box-red">
-				<h2>题目总数</h2>
-				<div class="view-box-total">{{problemNums}}</div>
+		<div class="content">
+			<h2>修改问题</h2>
+			<div class="plane-askForm">
+				<el-input v-model="askform.title" class="input-title" maxlength="30"
+				          show-word-limit>
+				</el-input>
+
+				<div id="mainEdit">
+					<p>{{askData.problem_content}}</p>
+				</div>
+
+				<div class="plane-btn">
+					<!--                    <el-link type="info">保存草稿</el-link>-->
+					<el-button type="primary" @click="sendPost">修改问题</el-button>
+				</div>
 			</div>
-			<div class="view-box view-box-ye">
-				<h2>用户总数</h2>
-				<div class="view-box-total">{{userNums}}</div>
-			</div>
-			<div class="view-box view-box-blue">
-				<h2>答案总数</h2>
-				<div class="view-box-total">{{answerNums}}</div>
-			</div>
+
 		</div>
-		<div class="plane plane-control">
-			<div class="plane-note">
-				<p>系统开放注册中</p> ●
-				<p>常用搜索功能集合</p>
-			</div>
-			<div class="plane-control-btn">
-				<div class="box-control" @click="search">
-					<b><i class="el-icon-search"></i></b><a href="#"> 搜索方案</a>
-				</div>
-				<div class="box-control" v-show="1==loginInfo.role">
-					<a href="newask.html"><b><i class="el-icon-edit"></i></b> 发布方案</a>
-				</div>
-			</div>
-		</div>
-		<div class="plane-item">
-			<h2>问题列表</h2>
-			<div class="ask-ltem" v-for="ask in problemList">
-				<div class="ask-left">
-                 <span class="ask-class"><el-tag effect="dark" hit="true" style="border: none"
-                                                 size="small" :color="ask.classcolor">{{ask.problem_id}}</el-tag> </span>
-					<div class="ask-title">
-						<a :href="'ask.html?ask='+ask.problem_id">{{ask.problem_title}}</a>
-					</div>
-				</div>
-				<div class="ask-right">
-					<span class="ask-view"><el-tag effect="dark" type="info" size="small">{{ask.problem_date}}</el-tag> </span>
-				</div>
-			</div>
-		</div>
-		<el-pagination
-				background
-				layout="prev, pager, next"
-				:total="pageInfo.total"
-				:page-size = "pageSize"
-				:current-page="pageNum"
-				@current-change="pageChange">
-		</el-pagination>
 		<transition name="el-zoom-in-center">
 			<div class="window-plane-login" v-show="showLoginWindow">
 				<div class="box-mask"></div>
@@ -116,85 +86,77 @@
 			</div>
 		</transition>
 	</main>
-	<footer class="fixed-bottom">
-		<div class="plane-footer">
-			方案解决系统 code by zcpsama
-		</div>
-	</footer>
 	<script>
+        (function ($) {
+            $.getUrlParam = function (name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]);
+                return null;
+            }
+        })(jQuery);
+
+
         var vue = new Vue({
             el: '#app',
             mounted() {
                 this.init()
             },
             data: {
-                pageNum:1,
-                pageSize:9,
                 userOb: {},
-                problemNums: '0',
-                userNums: '0',
-                answerNums: '0',
-	            pageInfo:{},
-                problemList: [],
+                askData: {},
+                askform: {
+                    title: '',
+                    content: '',
+                    user_id: ''
+                },
                 form: {
                     username: '',
                     password: ''
                 },
                 menuActiveIndex: 1,
                 islogin: 0,
-                loginInfo:{},
+                loginInfo: {},
                 showLoginWindow: false
             },
             methods: {
-
-                init: function () {
+                init() {
                     var that = this;
-                    $.get('/getProblemNums', function (data) {
-                        let obj = JSON.parse(data);
-                        that.problemNums = obj.problemNums;
-                    });
-                    $.get('/getUserNums', function (data) {
-                        let obj = JSON.parse(data);
-                        that.userNums = obj.userNums;
-                    });
-                    $.get('/getAnswerNums', function (data) {
-                        let obj = JSON.parse(data);
-                        that.answerNums = obj.answerNums;
-                    });
                     $.get('/user/loginInfo', function (data) {
                         if (data != 0) {
                             that.loginInfo = JSON.parse(data);
                             that.islogin = 1;
                         }
                     });
-                    // $.get('/getAllProblem', function (data) {
-                    //     that.problemList = JSON.parse(data);
-                    // });
-                    $.get('/getProblemsByPage',{pageNum: that.pageNum,pageSize:that.pageSize}, function (data) {
+                    $.get('/getProblemById', {id: $.getUrlParam('ask')}, function (data) {
+                        if (data == null) {
+                            window.location.href = '/pages/error/index.html';
+                        }
                         let obj = JSON.parse(data);
-                        that.pageInfo = obj;
-                        that.problemList = obj.list;
+                        obj.problem_content = htmlDecode(obj.problem_content);
+                        that.askData = obj;
+                        that.askform.title = obj.problem_title;
                     });
-
                 },
-	            pageChange(page){
+                sendPost() {
                     let that = this;
-                    that.pageNum =  page;
-                    $.get('/getProblemsByPage',{pageNum: that.pageNum,pageSize:that.pageSize}, function (data) {
-                        let obj = JSON.parse(data);
-                        that.pageInfo = obj;
-                        that.pageNum = obj.pageNum;
-                        that.problemList = obj.list;
-                    });
-	            },
-                search() {
-                    this.$prompt('输入关键字', '搜索方案', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消'
-                    }).then(({value}) => {
-                        window.location.href = 'search.html?key=' + value;
-                    });
+                    $.post('/problem/update', {
+                        problem_id: that.askData.problem_id,
+                        user_id: that.loginInfo.id,
+                        title: that.askform.title,
+                        content: htmlEncode(editor.txt.html())
+                    }, function (data) {
 
+                        let obj = JSON.parse(data);
+                        if (obj.code === '1') {
+                            that.$message({type: 'success', message: obj.msg});
+                        } else {
+                            that.$message({type: 'error', message: obj.msg});
+                        }
+                        setTimeout(function () {
+                            window.location.href = "/";
+                        }, 1000);
+                    });
                 },
                 login() {
                     let that = this;
@@ -202,9 +164,9 @@
                         that.userOb = data;
                         let msg = null;
                         if (that.userOb.code === '1') {
-                            if(that.userOb.role===1){
-                                msg = '管理员:'+that.userOb.username+'  '+that.userOb.msg;
-                            }else {
+                            if (that.userOb.role === 1) {
+                                msg = '管理员:' + that.userOb.username + '  ' + that.userOb.msg;
+                            } else {
                                 msg = that.userOb.msg;
                             }
                             that.$message({type: 'success', message: msg});
@@ -230,12 +192,25 @@
                         }
                     })
                 },
-
                 closeLoginPlane() {
                     this.showLoginWindow = false;
                 }
             }
         });
+        var E = window.wangEditor;
+        var editor = new E('#mainEdit');
+        editor.customConfig.uploadImgShowBase64 = true;
+        editor.customConfig.zIndex = 100;
+        editor.create();
+
+        function htmlEncode(value) {
+            return $('<div/>').text(value).html();
+        }
+
+        //Html解码获取Html实体
+        function htmlDecode(value) {
+            return $('<div/>').html(value).text();
+        }
 	</script>
 </div>
 </body>

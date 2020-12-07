@@ -51,4 +51,9 @@ public class UserServiceImpl implements UserService {
     public int getRoleById(String id) {
         return userMapper.getRoleById(id);
     }
+
+    @Override
+    public int getStatusById(String id) {
+        return userMapper.getStatusById(id);
+    }
 }

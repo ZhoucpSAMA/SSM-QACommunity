@@ -43,6 +43,8 @@
           <element id="library" level="application" name="jquery" />
           <element id="library" level="application" name="layui" />
           <element id="library" level="application" name="layui.all" />
+          <element id="library" level="project" name="Maven: com.github.jsqlparser:jsqlparser:2.0" />
+          <element id="library" level="project" name="Maven: com.github.pagehelper:pagehelper:5.1.10" />
         </element>
       </element>
     </root>

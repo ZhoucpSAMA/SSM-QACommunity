@@ -4,13 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.laozhou.dao.AnswerMapper">
     <insert id="addAnswer" parameterType="Answer">
-        insert into answer (answer_id, problem_id, answer_user_id, problem_answer, answer_date, answer_likes)
-        values (#{answer_id}, #{problem_id}, #{answer_user_id}, #{problem_answer}, #{answer_date}, #{answer_likes});
+        insert into answer (problem_id, answer_user_id, problem_answer, answer_date, answer_likes)
+        values ( #{problem_id}, #{answer_user_id}, #{problem_answer}, #{answer_date}, #{answer_likes})
     </insert>
     <delete id="delAnswerById" parameterType="int">
         delete
         from answer
-        where answer_id = #{answer_id};
+        where answer_id = #{answer_id}
+    </delete>
+    <delete id="delAnswerByProblemId" parameterType="int">
+        delete
+        from answer
+        where problem_id = #{problem_id}
     </delete>
     <update id="updateAnswer" parameterType="Answer">
         update answer
@@ -20,21 +25,26 @@
             problem_answer =#{problem_answer},
             answer_date    =#{answer_date},
             answer_likes   = #{answer_likes}
-        where answer_id = #{answer_id};
+        where answer_id = #{answer_id}
     </update>
-    <select id="getAllAnswerByProblemId" parameterType="int" resultType="Answer">
+    <select id="getAllAnswerByProblemId" resultType="Answer">
         select *
         from answer
         where problem_id = #{problem_id}
     </select>
     <select id="getAnswerNums" resultType="int">
-        select count(*) from answer
+        select count(*)
+        from answer
     </select>
     <select id="getAllAnswerByUserId" parameterType="int" resultType="Answer">
         select *
         from answer
         where answer_user_id = #{answer_user_id}
     </select>
-
-
+    <select id="getCurAnswerUser" resultType="String">
+        SELECT username
+        FROM `user`,answer
+        WHERE answer_user_id = `user`.id
+          AND answer_id = #{answer_id}
+    </select>
 </mapper>

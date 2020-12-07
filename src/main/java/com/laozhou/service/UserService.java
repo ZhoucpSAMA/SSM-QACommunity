@@ -19,4 +19,5 @@ public interface UserService {
     int getUserTotal();
     int getIDByUsername(String username);
     int getRoleById(String id);
+    int getStatusById(String id);
 }

@@ -12,6 +12,8 @@ public interface AnswerMapper {
 
     int delAnswerById(@Param("answer_id") Integer answer_id);
 
+    int delAnswerByProblemId(@Param("problem_id")Integer problem_id);
+
     int updateAnswer(Answer answer);
 
     List<Answer> getAllAnswerByProblemId(@Param("problem_id") Integer problem_id);
@@ -19,4 +21,6 @@ public interface AnswerMapper {
     int getAnswerNums();
 
     List<Answer> getAllAnswerByUserId(@Param("answer_user_id") Integer answer_user_id);
+
+    String getCurAnswerUser(@Param("answer_id")Integer answer_id);
 }

@@ -40,37 +40,38 @@
 		</div>
 	</header>
 	<main>
-		<div class="content">
+		<div class="content" v-for="ansList in ansData">
 			<div class="ask-title">
-				<h1 v-cloak> {{askData.problem_title}}</h1>
+				<h1 v-cloak> 哈哈哈</h1>
 			</div>
 			<div class="ask-meta">
 				<div class="ask-meta-info">
 					<el-tag effect="dark" hit="true" style="border: none"
-					        size="mini" :color="askData.classcolor">{{askData.problem_id}}
+					        size="mini" :color="ansData.classcolor">{{ansList.answer_id}}
 					</el-tag>
-					<span class="ask-meta-span"><i class="el-icon-user-solid"></i> {{curProblemUser}}</span>
+					<span class="ask-meta-span"><i class="el-icon-user-solid"></i> {{curAnswerUser}}</span>
 					<span class="ask-meta-span ask-creattime"> <i
-							class="el-icon-time"></i> {{askData.problem_date}}</span>
+							class="el-icon-time"></i> {{ansList.answer_date}}</span>
 				</div>
 
 				<div class="ask-control" v-show="1==loginInfo.role">
 					<i class="el-icon-edit-outline">
-						<a :href="'updateask.html?ask='+askData.problem_id">编辑</a></i>
-
+						<a :href="'updateask.html?ask='+ansData.problem_id">编辑</a></i>
 					<i class="el-icon-delete" @click="delProblem">删除</i>
 				</div>
 			</div>
-			<div class="ask-content" v-html="askData.problem_content"></div>
+			<div class="ask-content" v-html="ansList.problem_answer">
+
+			</div>
 
 			<div class="plane plane-control">
-				<div class="plane-note" v-show="1==islogin">
+				<div class="plane-note">
 					<p>●请点击右边按钮</p> ●
 					<p>提交或查询题解●</p>
 				</div>
-				<div class="plane-control-btn" v-show="1==islogin">
+				<div class="plane-control-btn">
 					<div class="box-control">
-						<a :href="'answer.html?ask='+askId"><b><i class="el-icon-view"></i></b> 查看题解</a>
+						<a href="newask.html"><b><i class="el-icon-view"></i></b> 查看题解</a>
 					</div>
 					<div class="box-control" v-show="1==islogin">
 						<a :href="'newans.html?ask='+askId"><b><i class="el-icon-edit"></i></b> 发布题解</a>
@@ -127,7 +128,7 @@
                 data: {
                     askId:'',
                     userOb: {},
-                    askData: {},
+                    ansData: [],
                     form: {
                         username: '',
                         password: ''
@@ -135,13 +136,11 @@
                     menuActiveIndex: 1,
                     islogin: 0,
                     loginInfo: {},
-                    // answerList:[],
-                    curProblemUser: '',
+                    curAnswerUser: '',
                     showLoginWindow: false
                 },
                 methods: {
                     init() {
-
                         if ($.getUrlParam('ask') == null) {
                             return;
                         }
@@ -153,23 +152,20 @@
                                 that.islogin = 1;
                             }
                         });
-                        $.get('/getProblemById', {id: $.getUrlParam('ask')}, function (data) {
+                        $.get('/getAnswerByProblemId', {id: $.getUrlParam('ask')}, function (data) {
                             if (data == null) {
                                 window.location.href = '/pages/error/index.html';
                             }
-                            let obj = JSON.parse(data);
-                            obj.problem_content = htmlDecode(obj.problem_content);
-                            that.askData = obj;
+                            let objs = JSON.parse(data);
+                            for(let obj in objs) {
+                                objs[obj].problem_answer= htmlDecode(objs[obj].problem_answer);
+                            }
+                            // obj.problem_content = htmlDecode(obj.problem_content);
+                            that.ansData = objs;
                         });
-                        $.get('/getCurProblemUser', {id: $.getUrlParam('ask')}, function (data) {
-                            that.curProblemUser = data;
+                        $.get('/getCurAnswerUser', {id: $.getUrlParam('ask')}, function (data) {
+                            that.curAnswerUser = data;
                         });
-                        // $.get('/getAnswerByProblemId', {id: $.getUrlParam('ask')}, function (data) {
-                        //     that.answerList = JSON.parse(data);
-                        //
-                        // });
-
-
                     },
                     delProblem() {
                         let that = this;

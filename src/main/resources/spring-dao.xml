@@ -23,6 +23,20 @@
         <!--配置Mybatis的配置文件-->
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
         <!--        <property name="mapperLocations" value="classpath:com/laozhou/dao/*.xml"/>-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <!--使用下面的方式配置参数，一行配置一个 -->
+                        <value>
+                            helperDialect=mysql
+                            reasonable=true
+                            supportMethodsArguments=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
     <!--配置dao接口扫描包，动态的实现了Dao接口可以注入到Spring容器中-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">

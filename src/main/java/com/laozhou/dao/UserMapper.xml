@@ -6,20 +6,20 @@
     <select id="getUserByName" resultType="User">
         select *
         from user
-        where username = #{username};
+        where username = #{username}
     </select>
     <select id="getAllUsers" resultType="User">
         select *
-        from user;
+        from user
     </select>
     <insert id="addUser" parameterType="User">
         insert into user (username, password, role, status,email)
-        values (#{username}, #{password}, #{role}, #{status},#{email});
+        values (#{username}, #{password}, #{role}, #{status},#{email})
     </insert>
     <delete id="delUserByName" parameterType="String">
         delete
         from user
-        where username = #{username};
+        where username = #{username}
     </delete>
     <update id="updateUser" parameterType="User">
         update user
@@ -29,7 +29,7 @@
             role     = #{role},
             status   = #{status},
             email = #{email}
-        where id = #{id};
+        where id = #{id}
     </update>
     <select id="getUserTotal" resultType="int">
         select count(*)
@@ -38,7 +38,10 @@
     <select id="getIDByUsername" resultType="int">
         select id from user where username = #{username}
     </select>
-    <select id="getRoleById" resultType="int">
+    <select id="getRoleById"  resultType="int">
         select role from user where id = #{id}
+    </select>
+    <select id="getStatusById"  resultType="int">
+        select status from user where id = #{id}
     </select>
 </mapper>

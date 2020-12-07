@@ -1,5 +1,8 @@
 package com.laozhou.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.laozhou.dao.ProblemMapper;
 import com.laozhou.pojo.Problem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +53,12 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public String getCurProblemUser(Integer problem_id) {
         return problemMapper.getCurProblemUser(problem_id);
+    }
+
+    @Override
+    public PageInfo<Problem> getAllProblemsByPage(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Problem> list = problemMapper.getAllProblems();
+        return new PageInfo<>(list);
     }
 }

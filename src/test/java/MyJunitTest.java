@@ -1,4 +1,8 @@
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.laozhou.dao.ProblemMapper;
 import com.laozhou.pojo.Answer;
+import com.laozhou.pojo.Problem;
 import com.laozhou.pojo.User;
 import com.laozhou.service.AnswerService;
 import com.laozhou.service.AnswerServiceImpl;
@@ -28,8 +32,8 @@ public class MyJunitTest {
     @Test
     public void test02() {
         ProblemService problemServiceImpl = context.getBean("problemServiceImpl", ProblemService.class);
-        int nums = problemServiceImpl.getProblemNums();
-        System.out.println(nums);
+        PageInfo<Problem> list = problemServiceImpl.getAllProblemsByPage(1, 10);
+        System.out.println(list);
     }
 
     @Test
@@ -45,6 +49,13 @@ public class MyJunitTest {
         System.out.println(allAnswerByProblemId);
 
     }
-
+    @Test
+    public void pageTest(){
+        ProblemMapper mapper = context.getBean("problemMapper", ProblemMapper.class);
+        PageHelper.startPage(1,10);
+        List<Problem> allProblems = mapper.getAllProblems();
+        PageInfo<Problem> info  = new PageInfo<>(allProblems);
+        System.out.println(info);
+    }
 
 }

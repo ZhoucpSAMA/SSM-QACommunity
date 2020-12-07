@@ -1,5 +1,6 @@
 package com.laozhou.service;
 
+import com.github.pagehelper.PageInfo;
 import com.laozhou.pojo.Problem;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,4 +22,6 @@ public interface ProblemService {
     Problem getProblemById(Integer problem_id);
 
     String getCurProblemUser(Integer problem_id);
+
+    PageInfo<Problem> getAllProblemsByPage(Integer pageNum, Integer pageSize);
 }

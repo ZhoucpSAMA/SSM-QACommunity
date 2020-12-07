@@ -20,5 +20,5 @@ public class Answer {
     private Integer answer_score;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date answer_date;
-    private String answer_likes;
+    private Integer answer_likes;
 }

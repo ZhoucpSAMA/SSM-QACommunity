@@ -5,15 +5,15 @@
 <mapper namespace="com.laozhou.dao.ProblemMapper">
     <select id="getAllTitle" resultType="Problem">
         select problem_title
-        from problem;
+        from problem
     </select>
     <select id="getAllProblems" resultType="Problem">
         select *
-        from problem;
+        from problem
     </select>
     <insert id="addProblem" parameterType="Problem">
         insert into problem (problem_title, problem_content, problem_date, problem_user_id)
-        values (#{problem_title}, #{problem_content}, #{problem_date}, #{problem_user_id});
+        values (#{problem_title}, #{problem_content}, #{problem_date}, #{problem_user_id})
     </insert>
     <delete id="delProblemById" parameterType="int">
         delete
@@ -22,12 +22,12 @@
     </delete>
     <update id="updateProblem" parameterType="Problem">
         update problem
-        set problem_id      = #{problem_id},
+        set
             problem_title   = #{problem_title},
             problem_content = #{problem_content},
             problem_date    = #{problem_date},
             problem_user_id = #{problem_user_id}
-        where problem_id = #{problem_id};
+        where problem_id = #{problem_id}
     </update>
     <select id="getProblemNums" resultType="int">
         select count(problem_id) as nums

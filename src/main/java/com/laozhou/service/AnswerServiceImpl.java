@@ -23,6 +23,11 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    public int delAnswerByProblemId(Integer problem_id) {
+        return answerMapper.delAnswerByProblemId(problem_id);
+    }
+
+    @Override
     public int updateAnswer(Answer answer) {
         return answerMapper.updateAnswer(answer);
     }
@@ -40,6 +45,11 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public List<Answer> getAllAnswerByUserId(Integer answer_user_id) {
         return answerMapper.getAllAnswerByUserId(answer_user_id);
+    }
+
+    @Override
+    public String getCurAnswerUser(Integer answer_id) {
+        return answerMapper.getCurAnswerUser(answer_id);
     }
 
 
