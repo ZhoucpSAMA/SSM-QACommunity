@@ -25,30 +25,32 @@ public class AnswerController {
 
     @RequestMapping("/getAnswerNums")
     @ResponseBody
-    public String getAnswerNums(){
+    public String getAnswerNums() {
         HashMap<Object, Object> map = new HashMap<>();
-        map.put("answerNums",Integer.toString(answerService.getAnswerNums()));
+        map.put("answerNums", Integer.toString(answerService.getAnswerNums()));
         return JSON.toJSONString(map);
     }
+
     @RequestMapping("/getAnswerByProblemId")
     @ResponseBody
-    public String getAnswerByProblemId(@RequestParam("id")String id) {
+    public String getAnswerByProblemId(@RequestParam("id") String id) {
         if (id != null) {
             List<Answer> list = answerService.getAllAnswerByProblemId(Integer.parseInt(id));
             return JSON.toJSONString(list);
         }
         return null;
     }
+
     @RequestMapping("/getCurAnswerUser")
     @ResponseBody
-    public String getCurAnswerUser(@RequestParam("id")String id){
+    public String getCurAnswerUser(@RequestParam("id") String id) {
         return answerService.getCurAnswerUser(Integer.parseInt(id));
     }
 
     @RequestMapping("/answer/add")
     @ResponseBody
     public String addAnswer(
-            @RequestParam("problem_id")String problem_id,
+            @RequestParam("problem_id") String problem_id,
             @RequestParam("user_id") String user_id,
             @RequestParam("content") String content
     ) {
@@ -58,7 +60,7 @@ public class AnswerController {
             status = userService.getStatusById(user_id);
         }
         HashMap<Object, Object> map = new HashMap<>();
-        if (user_id!=null&&problem_id!=null && content != null && status != 0) {
+        if (user_id != null && problem_id != null && content != null && status != 0) {
             Answer answer = new Answer();
             answer.setAnswer_user_id(Integer.parseInt(user_id));
             answer.setAnswer_date(new Date());
@@ -74,4 +76,36 @@ public class AnswerController {
         map.put("msg", "用户无权限!");
         return JSON.toJSONString(map);
     }
+
+    @RequestMapping("/answer/del")
+    @ResponseBody
+    public String delAnswerByID(@RequestParam("answer_id") String answer_id) {
+        if (answer_id != null) {
+            return JSON.toJSONString(answerService.delAnswerById(Integer.parseInt(answer_id)));
+        }
+        return null;
+    }
+    @RequestMapping("/answer/likes")
+    @ResponseBody
+    public String likesAdd(@RequestParam("answer_id") String answer_id){
+        if(answer_id!=null){
+            int likes = answerService.getLikeByAnswerID(Integer.parseInt(answer_id));
+            likes+=1;
+            answerService.likesAdd(Integer.parseInt(answer_id), likes);
+            return "1";
+        }
+        return "0";
+    }
+
+
+//    @RequestMapping("/isPost")
+//    @ResponseBody
+//    public String hasPost(@RequestParam("problem_id") String problem_id) {
+//
+//        List<Answer> list = answerService.getAllAnswerByProblemId(Integer.parseInt(problem_id));
+//        if(list.size()==0){
+//            return "0";
+//        }
+//        return "1";
+//    }
 }

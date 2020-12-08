@@ -25,5 +25,7 @@
         <mapper class="com.laozhou.dao.UserMapper"/>
         <mapper class="com.laozhou.dao.ProblemMapper"/>
         <mapper class="com.laozhou.dao.AnswerMapper"/>
+        <mapper class="com.laozhou.dao.RankMapper"/>
+        <mapper class="com.laozhou.dao.CommentMapper"/>
     </mappers>
 </configuration>

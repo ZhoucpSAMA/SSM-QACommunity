@@ -12,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="lib/element-ui.css"/>
 	<link rel="stylesheet" type="text/css" href="css/ask.css"/>
 	<link rel="stylesheet" type="text/css" href="css/index.css"/>
-	<title>方案解决系统</title>
+	<title>在线考核平台</title>
 </head>
 <body>
 <div id="app">
@@ -69,7 +69,23 @@
 					<p>提交或查询题解●</p>
 				</div>
 				<div class="plane-control-btn" v-show="1==islogin">
-					<div class="box-control">
+					<div v-show="1==islogin">
+						<el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
+							查看排行
+						</el-button>
+						<el-drawer
+								title="当前题目排行榜"
+								:visible.sync="drawer"
+								:direction="direction"
+								:before-close="handleClose">
+							<el-table :data="rankList">
+								<el-table-column property="id" label="ID" width="100"></el-table-column>
+								<el-table-column property="username" label="用户名" width="200"></el-table-column>
+								<el-table-column property="answer_likes" label="点赞数"></el-table-column>
+							</el-table>
+						</el-drawer>
+					</div>
+					<div class="box-control" v-show="1==islogin">
 						<a :href="'answer.html?ask='+askId"><b><i class="el-icon-view"></i></b> 查看题解</a>
 					</div>
 					<div class="box-control" v-show="1==islogin">
@@ -106,7 +122,7 @@
 	</main>
 	<footer class="fixed-bottom">
 		<div class="plane-footer">
-			方案解决系统 code by zcpsama
+			在线考核平台 code by zcpsama
 		</div>
 	</footer>
 	<script>
@@ -125,7 +141,7 @@
                     this.init()
                 },
                 data: {
-                    askId:'',
+                    askId: '',
                     userOb: {},
                     askData: {},
                     form: {
@@ -135,13 +151,14 @@
                     menuActiveIndex: 1,
                     islogin: 0,
                     loginInfo: {},
-                    // answerList:[],
                     curProblemUser: '',
-                    showLoginWindow: false
+                    showLoginWindow: false,
+                    drawer: false,
+                    direction: 'rtl',
+                    rankList: [],
                 },
                 methods: {
                     init() {
-
                         if ($.getUrlParam('ask') == null) {
                             return;
                         }
@@ -149,7 +166,8 @@
                         that.askId = $.getUrlParam('ask');
                         $.get('/user/loginInfo', function (data) {
                             if (data != 0) {
-                                that.loginInfo = JSON.parse(data);
+                                var  logInfoOBJ  = JSON.parse(data);
+                                that.loginInfo = logInfoOBJ;
                                 that.islogin = 1;
                             }
                         });
@@ -164,11 +182,12 @@
                         $.get('/getCurProblemUser', {id: $.getUrlParam('ask')}, function (data) {
                             that.curProblemUser = data;
                         });
-                        // $.get('/getAnswerByProblemId', {id: $.getUrlParam('ask')}, function (data) {
-                        //     that.answerList = JSON.parse(data);
-                        //
-                        // });
-
+                        $.get('/getRankByProblemID', {id: $.getUrlParam('ask')}, function (data) {
+                            that.rankList = JSON.parse(data);
+                        });
+                        $.get('/getRankByProblemID', {id: $.getUrlParam('ask')}, function (data) {
+                            that.rankList = JSON.parse(data);
+                        });
 
                     },
                     delProblem() {
@@ -218,6 +237,12 @@
                             }
 
                         }, "json");
+                    },
+                    handleClose(done) {
+                        this.$confirm('确认关闭？')
+                            .then(_ => {
+                                done();
+                            })
                     },
                     exit() {
                         let that = this;

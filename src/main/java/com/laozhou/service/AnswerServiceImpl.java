@@ -52,5 +52,20 @@ public class AnswerServiceImpl implements AnswerService {
         return answerMapper.getCurAnswerUser(answer_id);
     }
 
+    @Override
+    public List<Answer> getAnswerByProblemIdAndUserId(Integer problem_id, Integer answer_user_id) {
+        return answerMapper.getAnswerByProblemIdAndUserId(problem_id,answer_user_id);
+    }
+
+    @Override
+    public int getLikeByAnswerID(Integer answer_id) {
+        return answerMapper.getLikeByAnswerID(answer_id);
+    }
+
+    @Override
+    public int likesAdd(Integer answer_id, Integer answer_likes) {
+        return answerMapper.likesAdd(answer_id,answer_likes);
+    }
+
 
 }

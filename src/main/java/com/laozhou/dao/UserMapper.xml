@@ -44,4 +44,7 @@
     <select id="getStatusById"  resultType="int">
         select status from user where id = #{id}
     </select>
+    <select id="getUserIDByUsername" resultType="int">
+        select id from user where username = #{username}
+    </select>
 </mapper>

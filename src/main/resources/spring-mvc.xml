@@ -82,11 +82,11 @@
 <!--        <property name="suffix" value=".jsp"/>-->
 <!--    </bean>-->
 <!--        配置拦截器-->
-<!--        <mvc:interceptors>-->
-<!--            <mvc:interceptor>-->
-<!--                <mvc:mapping path="/user/**"/>-->
-<!--                <bean class="com.laozhou.config.LoginInterceptor"/>-->
-<!--            </mvc:interceptor>-->
-<!--        </mvc:interceptors>-->
-
+        <mvc:interceptors>
+            <mvc:interceptor>
+                <mvc:mapping path="/problem/**"/>
+                <mvc:mapping path="/answer/**"/>
+                <bean class="com.laozhou.config.LoginInterceptor"/>
+            </mvc:interceptor>
+        </mvc:interceptors>
 </beans>

@@ -47,4 +47,17 @@
         WHERE answer_user_id = `user`.id
           AND answer_id = #{answer_id}
     </select>
+    <select id="getAnswerByProblemIdAndUserId" resultType="Answer">
+        SELECT * FROM answer
+        WHERE problem_id = #{problem_id}
+          AND answer_user_id = #{answer_user_id}
+    </select>
+    <select id="getLikeByAnswerID" resultType="int">
+        select answer_likes from answer where answer_id = #{answer_id}
+    </select>
+    <update id="likesAdd" parameterType="int">
+        update answer
+        set  answer_likes = #{answer_likes}
+        where answer_id = #{answer_id}
+    </update>
 </mapper>

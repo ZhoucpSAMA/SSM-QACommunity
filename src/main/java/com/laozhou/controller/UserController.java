@@ -50,5 +50,12 @@ public class UserController {
         map.put("msg","注册失败!");
         return JSON.toJSONString(map);
     }
+    @RequestMapping("/getID")
+    @ResponseBody
+    public String getID(@RequestParam("username")String username){
+        int id = userService.getIDByUsername(username);
+        return String.valueOf(id);
+
+    }
 
 }

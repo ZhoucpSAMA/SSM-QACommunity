@@ -20,5 +20,10 @@ public interface AnswerService {
 
     String getCurAnswerUser(Integer answer_id);
 
+    List<Answer> getAnswerByProblemIdAndUserId(Integer problem_id, Integer answer_user_id);
+
+    int getLikeByAnswerID(Integer answer_id);
+
+    int likesAdd(Integer answer_id,Integer answer_likes);
 
 }

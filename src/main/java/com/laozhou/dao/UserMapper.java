@@ -25,4 +25,6 @@ public interface UserMapper {
     int getRoleById(@Param("id")String id);
 
     int getStatusById(@Param("id")String id);
+
+    int getUserIDByUsername(@Param("username")String username);
 }
