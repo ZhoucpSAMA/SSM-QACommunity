@@ -4,6 +4,9 @@
 
 在线考核系统（Problem System）采用主流Java EE 轻量级框架整合开发。
 
+大二上所做，技术有限，很多问题需要完善。欢迎学习交流。
+
+
 ##  获取源码
 
 https://gitee.com/zcpsama/problem-system
